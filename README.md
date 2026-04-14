@@ -15,6 +15,8 @@
 * **[UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction](https://arxiv.org/abs/1802.03426)** (McInnes, Healy, and Melville)
 * **[Scalable Extraction of Training Data from (Production) Language Models](https://arxiv.org/pdf/2311.17035)** (Nasr, Carlini)
     * Older security paper on LLMs if anyone's interested. Since patched, but great learning material to understand how tokens operate in LLMs.
+* **[Explore Spurious Correlations at the Concept Level in Language Modelsfor Text Classification](https://aclanthology.org/2024.acl-long.28.pdf)**
+
   
 ### Papers From Slides in Lectures:  
 * **[Reducing the Dimensionality of Data with Neural Networks](https://dbirman.github.io/learn/hierarchy/pdfs/Hinton2006.pdf)** (Original Science Publication)
