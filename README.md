@@ -16,7 +16,8 @@
 * **[Scalable Extraction of Training Data from (Production) Language Models](https://arxiv.org/pdf/2311.17035)** (Nasr, Carlini)
     * Older security paper on LLMs if anyone's interested. Since patched, but great learning material to understand how tokens operate in LLMs.
 * **[Explore Spurious Correlations at the Concept Level in Language Modelsfor Text Classification](https://aclanthology.org/2024.acl-long.28.pdf)**
-
+* **[Quasi-Hyperbolic Momentum And Adam For Deep Learning](https://arxiv.org/pdf/1810.06801v1)**
+    * Good paper if you wish to explore optimizations on gradient descent and related lower-level concepts in DL.
   
 ### Papers From Slides in Lectures:  
 * **[Reducing the Dimensionality of Data with Neural Networks](https://dbirman.github.io/learn/hierarchy/pdfs/Hinton2006.pdf)** (Original Science Publication)
@@ -31,3 +32,7 @@
 * **[Learning a Recurrent Visual Representation for Image Caption Generation](https://arxiv.org/abs/1411.5654)** (Chen & Zitnick)
 
 *^Not sure if all above links are valid...*
+
+### Miscellaneous:  
+* **[How to Read a Paper](https://web.stanford.edu/class/cs114/reading-keshav.pdf)** -- Good read if you aren't familiar with 3-pass method for paper reading.
+    * *Side note, check out Zotero if you want to map out papers easily*
