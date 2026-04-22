@@ -1,7 +1,7 @@
 # 189G Final Project  
 
 ## Deadlines:  
-* **Proposal**: Unspecified
+* **Proposal**: 4/28
 * **Mid-quarter** Checkpoint: Unspecified
 * **Final Report**: Unspecified
 * **Final Presentation**: 06/02, 06/04
