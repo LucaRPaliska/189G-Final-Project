@@ -1,0 +1,17 @@
+[
+  {
+    "image": "image_0.jpg",
+    "text": "Is there a cat in the image?",
+    "label": "yes"
+  },
+  {
+    "image": "image_1.jpg",
+    "text": "Is there a car in the image?",
+    "label": "no"
+  },
+  {
+    "image": "image_2.jpg",
+    "text": "Is there a person in the image?",
+    "label": "yes"
+  }
+]
