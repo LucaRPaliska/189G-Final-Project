@@ -12,9 +12,6 @@ dataset = load_dataset("lmms-lab/POPE", split="test")
 
 print(f"Loaded {len(dataset)} samples")
 
-# Take first 100 samples
-dataset = dataset.select(range(min(100, len(dataset))))
-
 pope_data = []
 for idx, item in enumerate(dataset):
     # Save image

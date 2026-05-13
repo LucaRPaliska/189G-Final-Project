@@ -12,12 +12,30 @@
 #   7. Saves probe dataset
 #
 # Output:
-#   probe_dataset.npz
+#   eg. probe_dataset_Qwen_Qwen2.5-VL-3B-Instruct_last.npz
 #
+# Commands: 
+# python3 extract_probe_features.py --model Qwen/Qwen2.5-VL-3B-Instruct --pooling last
+# python3 extract_probe_features.py --model Qwen/Qwen2.5-VL-3B-Instruct --pooling mean
+
+# python3 extract_probe_features.py --model OpenGVLab/InternVL2-2B --pooling last
+# python3 extract_probe_features.py --model OpenGVLab/InternVL2-2B --pooling mean
+
+# python3 extract_probe_features.py --model microsoft/Phi-3.5-vision-instruct --pooling last
+# python3 extract_probe_features.py --model microsoft/Phi-3.5-vision-instruct --pooling mean
+
+# python3 extract_probe_features.py --model deepseek-ai/deepseek-vl-1.3b-base --pooling last
+# python3 extract_probe_features.py --model deepseek-ai/deepseek-vl-1.3b-base --pooling mean
+
+# python3 extract_probe_features.py --model openbmb/MiniCPM-V-2 --pooling last
+# python3 extract_probe_features.py --model openbmb/MiniCPM-V-2 --pooling mean
+
+
 # ============================================================
 
 import os
 import json
+import argparse
 import torch
 import numpy as np
 
@@ -30,19 +48,36 @@ from transformers import (
 )
 
 # ============================================================
+# ARGS
+# ============================================================
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--model", type=str, default="Qwen/Qwen2.5-VL-3B-Instruct")
+parser.add_argument("--pooling", type=str, default="last", choices=["last", "mean"])
+parser.add_argument("--output", type=str, default=None)
+parser.add_argument("--max_samples", type=int, default=None)
+args = parser.parse_args()
+
+# ============================================================
 # CONFIG
 # ============================================================
 
-MODEL_NAME = "Qwen/Qwen2.5-VL-3B-Instruct"
+MODEL_NAME = args.model
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-# DTYPE = torch.float16
 DTYPE = torch.float16
 
-MAX_SAMPLES = 100
+MAX_SAMPLES = args.max_samples
 
-OUTPUT_FILE = "probe_dataset.npz"
+POOLING = args.pooling
+
+# auto-name output file if not specified
+if args.output is not None:
+    OUTPUT_FILE = args.output
+else:
+    model_short = MODEL_NAME.replace("/", "_")
+    OUTPUT_FILE = f"probe_dataset_{model_short}_{POOLING}.npz"
 
 # Example:
 # data/
@@ -213,17 +248,18 @@ for sample in tqdm(dataset):
 
     for layer_idx in range(len(hidden_states)):
 
-        # last prompt token representation
-        vec = hidden_states[layer_idx][0, -1, :]
+        h = hidden_states[layer_idx][0]  # [seq_len, hidden_dim]
 
-        vec = vec.float().cpu().numpy()
+        if POOLING == "last":
+            vec = h[-1, :].float().cpu().numpy()
+        else:
+            vec = h.float().mean(dim=0).cpu().numpy()
 
         layer_features.append(vec)
 
     layer_features = np.stack(layer_features)
 
-    # shape:
-    # [num_layers+1, hidden_dim]
+    # shape: [num_layers+1, hidden_dim]
 
     # --------------------------------------------------------
     # STORE
@@ -241,7 +277,7 @@ for sample in tqdm(dataset):
 all_features = np.stack(all_features)
 all_labels = np.array(all_labels)
 
-print("Features shape:", all_features.shape)
+print(f"Features ({POOLING}) shape:", all_features.shape)
 print("Labels shape:", all_labels.shape)
 
 np.savez(
@@ -258,25 +294,13 @@ print(f"Saved to {OUTPUT_FILE}")
 # SHAPES
 # ============================================================
 
-# features:
-# [N, num_layers+1, hidden_dim]
-#
-# labels:
-# [N]
+# features: [N, num_layers+1, hidden_dim]
+# labels:   [N]
 #
 # Example:
+# N=5000, layers=37, hidden_dim=2048 => [5000, 37, 2048]
 #
-# N = 5000
-# layers = 37
-# hidden_dim = 2048
-#
-# =>
-# [5000, 37, 2048]
-#
-# Later:
-#
+# In train script:
 # X = features[:, layer_idx, :]
-#
-# for probing a specific layer.
 #
 # ============================================================
