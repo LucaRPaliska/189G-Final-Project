@@ -135,7 +135,7 @@ elif FAMILY == "internvl":
     from transformers import AutoModel
     model     = AutoModel.from_pretrained(
                     MODEL_NAME, torch_dtype=DTYPE, device_map="auto",
-                    trust_remote_code=True, low_cpu_mem_usage=True)
+                    trust_remote_code=True)
     tokenizer = AutoTokenizer.from_pretrained(
                     MODEL_NAME, trust_remote_code=True, use_fast=False)
     processor = None
