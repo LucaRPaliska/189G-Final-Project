@@ -2,12 +2,12 @@
 # run_collection.sh
 #
 # Runs extract_probe_features.py for each VLM (1000 samples each),
-# using both the logit (Gege) and EM+output (Luca) approaches.
+# using EM labeling + output hidden state + few-shot prompting.
 # Designed to be run on the AWS/Colab GPU instance from the project root.
 #
 # Usage:
-#   bash run_collection.sh              # run all models, both approaches
-#   bash run_collection.sh qwen         # single model, both approaches
+#   bash run_collection.sh              # run all models
+#   bash run_collection.sh qwen         # single model
 #   bash run_collection.sh phi
 #   bash run_collection.sh internvl
 #   bash run_collection.sh deepseek
@@ -44,24 +44,11 @@ run_model() {
     echo " Model: $model_id"
     echo "======================================================"
 
-    # ── Gege approach: logit labeling, prompt hidden state ────────────────────
-    echo ""
-    echo " [logit + prompt]"
     python3 extract_probe_features.py \
-        --model       "$model_id" \
-        --labeling    logit \
-        --hidden_state prompt \
-        --few_shot_n  0 \
-        $COMMON
-
-    # ── Luca approach: EM labeling, output hidden state, few-shot ─────────────
-    echo ""
-    echo " [em + output + few-shot]"
-    python3 extract_probe_features.py \
-        --model       "$model_id" \
-        --labeling    em \
+        --model        "$model_id" \
+        --labeling     em \
         --hidden_state output \
-        --few_shot_n  3 \
+        --few_shot_n   3 \
         $COMMON
 }
 
