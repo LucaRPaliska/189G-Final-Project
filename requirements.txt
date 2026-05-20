@@ -1,0 +1,12 @@
+torch>=2.0.0
+torchvision
+transformers>=4.49.0
+accelerate>=0.26.0
+datasets
+qwen-vl-utils
+Pillow>=9.0.0
+numpy
+pandas
+scikit-learn
+tqdm
+huggingface_hub
