@@ -34,8 +34,6 @@ parser.add_argument("--balance",       action="store_true",
                     help="Downsample majority class to 50/50 before training")
 parser.add_argument("--cross_test",    type=str, default=None,
                     help="Path to a second .npz to evaluate on after training")
-parser.add_argument("--save",          type=str, default=None,
-                    help="Path to save the trained probe checkpoint (.pt)")
 args = parser.parse_args()
 
 # ============================================================
@@ -258,7 +256,7 @@ def train_probe(layer_idx):
     else:
         cross_acc = cross_f1 = None
 
-    return best_val_acc, acc, f1, cross_acc, cross_f1, probe
+    return best_val_acc, acc, f1, cross_acc, cross_f1
 
 # ============================================================
 # RUN
@@ -273,7 +271,7 @@ if args.all_layers:
     results = []
 
     for li in range(n_layers):
-        val_acc, test_acc, test_f1, cross_acc, cross_f1, _ = train_probe(li)
+        val_acc, test_acc, test_f1, cross_acc, cross_f1 = train_probe(li)
         row = f"  Layer {li:3d} | val={val_acc:.4f} | test_acc={test_acc:.4f} | test_f1={test_f1:.4f}"
         if cross_acc is not None:
             row += f" | cross_acc={cross_acc:.4f}"
@@ -283,22 +281,9 @@ if args.all_layers:
     best = max(results, key=lambda x: x[1])
     print(f"\nBest layer: {best[0]}  val={best[1]:.4f}  test_acc={best[2]:.4f}  test_f1={best[3]:.4f}")
 
-    if args.save:
-        _, _, _, _, _, best_probe = train_probe(best[0])
-        save_path = args.save
-        torch.save({
-            "state_dict": best_probe.state_dict(),
-            "layer_idx":  best[0],
-            "hidden_dim": features.shape[2],
-            "val_acc":    best[1],
-            "test_acc":   best[2],
-            "test_f1":    best[3],
-        }, save_path)
-        print(f"Checkpoint saved to {save_path}")
-
 else:
 
-    val_acc, acc, f1, cross_acc, cross_f1, probe = train_probe(LAYER_IDX)
+    val_acc, acc, f1, cross_acc, cross_f1 = train_probe(LAYER_IDX)
 
     print("Accuracy:", acc)
     print("F1:", f1)
@@ -306,14 +291,3 @@ else:
     if cross_acc is not None:
         print("Cross-test Accuracy:", cross_acc)
         print("Cross-test F1:", cross_f1)
-
-    if args.save:
-        torch.save({
-            "state_dict": probe.state_dict(),
-            "layer_idx":  LAYER_IDX,
-            "hidden_dim": features.shape[2],
-            "val_acc":    val_acc,
-            "test_acc":   acc,
-            "test_f1":    f1,
-        }, args.save)
-        print(f"Checkpoint saved to {args.save}")
